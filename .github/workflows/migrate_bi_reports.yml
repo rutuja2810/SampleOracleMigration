@@ -22,22 +22,26 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v5                #This is a GitHub-maintained action that sets up Python on the GitHub Actions runner
         with:
           python-version: '3.11'
 
-      - name: Install dependencies
-        run: pip install zeep
+      - name: Install dependencies                    
+        run: 
+          python3 -m pip install --upgrade pip
+          pip install zeep requests                   #Python library that allows your script to communicate with SOAP-based web services, like Oracle BI Publisher’s Catalog Web ServicePython library that allows your script to communicate with SOAP-based web services, like Oracle BI Publisher’s Catalog Web Service
 
       - name: Export Reports from Source
         run: |
-          python3 scripts/export_bi_reports.py \
+          mkdir -p exported_reports
+          python3 scripts/export_bi_reports.py \      #runs your Python export script located at scripts/export_bi_reports.py.
             --url "$SRC_BI_URL" \
             --username "$BI_USER" \
-            --password "$BI_PASS"
+            --password "$BI_PASS" \
+            --output-dir exported_reports
 
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v3
+      - name: Upload Exported Reports as Artifact
+        uses: actions/upload-artifact@v3              #is a GitHub Actions step that uploads files or folders as workflow artifacts
         with:
           name: bi-reports
           path: exported_reports/
