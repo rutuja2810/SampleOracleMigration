@@ -6,7 +6,7 @@ from requests.auth import HTTPBasicAuth
 from zeep.transports import Transport
 import requests
 
-# Enable Zeep debug logging for SOAP request/response details
+# Enable Zeep debug logging to see full SOAP request/response (optional but useful)
 logging.config.dictConfig({
     'version': 1,
     'formatters': {
@@ -33,3 +33,7 @@ parser.add_argument('--url', required=True)
 parser.add_argument('--username', required=True)
 parser.add_argument('--password', required=True)
 args = parser.parse_args()
+
+wsdl = f"{args.url}/xmlpserver/services/PublicReportService?wsdl"
+session = requests.Session()
+session.auth = HTTPBasicAuth(args.username, args.password)
