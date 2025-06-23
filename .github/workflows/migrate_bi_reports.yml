@@ -37,7 +37,6 @@ jobs:
             --url "$SRC_BI_URL" \
             --username "$BI_USER" \
             --password "$BI_PASS" \
-            --output-dir exported_reports
 
       - name: Upload Exported Reports as Artifact
         uses: actions/upload-artifact@v4
@@ -51,4 +50,3 @@ jobs:
             --url "$TGT_BI_URL" \
             --username "$BI_USER" \
             --password "$BI_PASS" \
-            --input-dir exported_reports
