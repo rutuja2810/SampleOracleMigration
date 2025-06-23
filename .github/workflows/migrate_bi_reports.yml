@@ -1,54 +1,54 @@
-# .github/workflows/migrate_bi_reports.yml
-
 name: Migrate BI Publisher Reports
 
 on:
-  workflow_dispatch:  # Manual trigger
+  workflow_dispatch:  # Manual trigger from GitHub UI
   push:
-    branches: [main]  # Trigger when code is pushed to main
+    branches: [main]  # Also trigger on push to main
 
 jobs:
   migrate:
     runs-on: ubuntu-latest
 
     env:
-      BI_USER: ${{ secrets.BI_USER }}
-      BI_PASS: ${{ secrets.BI_PASS }}
-      SRC_BI_URL: ${{ secrets.SRC_BI_URL }}
-      TGT_BI_URL: ${{ secrets.TGT_BI_URL }}
+      # Source and Target BI Publisher URLs from GitHub Secrets
+      SRC_BI_URL: ${{ secrets.SRC_BI_URL }}   # Source BI Publisher environment URL
+      TGT_BI_URL: ${{ secrets.TGT_BI_URL }}   # Target BI Publisher environment URL
+      BI_USER: ${{ secrets.BI_USER }}         # BI Publisher username (shared)
+      BI_PASS: ${{ secrets.BI_PASS }}         # BI Publisher password or app password
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository code
         uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v5                #This is a GitHub-maintained action that sets up Python on the GitHub Actions runner
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
-      - name: Install dependencies                    
-        run: 
+      - name: Install Python dependencies
+        run: |
           python3 -m pip install --upgrade pip
-          pip install zeep requests                   #Python library that allows your script to communicate with SOAP-based web services, like Oracle BI Publisher’s Catalog Web ServicePython library that allows your script to communicate with SOAP-based web services, like Oracle BI Publisher’s Catalog Web Service
+          pip install zeep requests
 
-      - name: Export Reports from Source
+      - name: Export Reports from SOURCE BI Publisher
         run: |
           mkdir -p exported_reports
-          python3 scripts/export_bi_reports.py \      #runs your Python export script located at scripts/export_bi_reports.py.
+          python3 scripts/export_bi_reports.py \
             --url "$SRC_BI_URL" \
             --username "$BI_USER" \
             --password "$BI_PASS" \
             --output-dir exported_reports
 
       - name: Upload Exported Reports as Artifact
-        uses: actions/upload-artifact@v3              #is a GitHub Actions step that uploads files or folders as workflow artifacts
+        uses: actions/upload-artifact@v3
         with:
           name: bi-reports
           path: exported_reports/
 
-      - name: Import Reports to Target
+      - name: Import Reports to TARGET BI Publisher
         run: |
           python3 scripts/import_bi_reports.py \
             --url "$TGT_BI_URL" \
             --username "$BI_USER" \
-            --password "$BI_PASS"
+            --password "$BI_PASS" \
+            --input-dir exported_reports
