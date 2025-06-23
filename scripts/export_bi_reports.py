@@ -10,9 +10,7 @@ import requests
 logging.config.dictConfig({
     'version': 1,
     'formatters': {
-        'verbose': {
-            'format': '%(name)s: %(message)s'
-        }
+        'verbose': {'format': '%(name)s: %(message)s'}
     },
     'handlers': {
         'console': {
@@ -33,4 +31,5 @@ logging.config.dictConfig({
 parser = argparse.ArgumentParser()
 parser.add_argument('--url', required=True)
 parser.add_argument('--username', required=True)
-parser.add_argument('--password', required=Tr_
+parser.add_argument('--password', required=True)
+args = parser.parse_args()
