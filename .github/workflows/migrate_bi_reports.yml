@@ -44,6 +44,12 @@ jobs:
           name: bi-reports
           path: exported_reports/
 
+      - name: Download Exported Reports Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: bi-reports
+          path: exported_reports/
+
       - name: Import Reports to TARGET BI Publisher
         run: |
           python3 scripts/import_bi_reports.py \
