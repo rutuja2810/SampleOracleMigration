@@ -1,4 +1,5 @@
-import argparse, os
+import argparse
+import os
 from zeep import Client
 from requests.auth import HTTPBasicAuth
 from zeep.transports import Transport
@@ -10,32 +11,26 @@ parser.add_argument('--username', required=True)
 parser.add_argument('--password', required=True)
 args = parser.parse_args()
 
-# Construct WSDL and SOAP client
 wsdl = f"{args.url}/xmlpserver/services/PublicReportService?wsdl"
 session = requests.Session()
 session.auth = HTTPBasicAuth(args.username, args.password)
 client = Client(wsdl, transport=Transport(session=session))
 service = client.service
 
-# Define report and data model paths
-reports = [
-    ("MyReport.xdo", "/Custom/Financials/Reports/MyReport.xdo", "report"),     # layout
-    ("MyDataModel.xdm", "/Custom/Financials/Reports/MyDataModel.xdm", "datamodel")  # data model
+items = [
+    ("MyReport.xdo", "/Custom/Financials/Reports/MyReport.xdo"),
+    ("MyDataModel.xdm", "/Custom/Financials/Reports/MyDataModel.xdm")
 ]
 
-output_dir = "exported_reports"
-os.makedirs(output_dir, exist_ok=True)
+for file_name, report_path in items:
+    with open(f"exported_reports/{file_name}", "rb") as f:
+        data = f.read()
 
-for file_name, path, type in reports:
-    print(f"Exporting: {file_name}")
+    print(f"Importing {file_name} to {report_path}")
 
-    if type == "report":
-        result = service.getReportDefinition(reportAbsolutePath=path)
-    elif type == "datamodel":
-        result = service.downloadDataModel(dataModelAbsolutePath=path)
-    else:
-        print(f"Unknown type: {type}")
-        continue
-
-    with open(os.path.join(output_dir, file_name), "wb") as f:
-        f.write(result)
+    service.uploadReport(
+        reportPath=report_path,
+        reportData=data,
+        userID=args.username
+    )
+    print(f"Imported: {file_name}")
