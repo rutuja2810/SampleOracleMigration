@@ -41,7 +41,7 @@ jobs:
           path: exported_reports/
 
       - name: Download Exported Reports Artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: bi-reports
           path: exported_reports/
