@@ -1,4 +1,5 @@
-import argparse, os
+import argparse
+import os
 from zeep import Client
 from requests.auth import HTTPBasicAuth
 from zeep.transports import Transport
@@ -18,16 +19,22 @@ service = client.service
 
 os.makedirs("exported_reports", exist_ok=True)
 
-# Export report layout (.xdo)
+# Define report and data model paths
 report_path = "/Custom/Financials/Reports/MyReport.xdo"
+data_model_path = "/Custom/Financials/Reports/MyDataModel.xdm"
+
 print(f"Exporting report layout: {report_path}")
-report_data = service.getReportDefinition(reportAbsolutePath=report_path)
+report_data = service.getReportDefinition(
+    reportAbsolutePath=report_path,
+    userID=args.username
+)
 with open("exported_reports/MyReport.xdo", "wb") as f:
     f.write(report_data)
 
-# Export data model (.xdm)
-data_model_path = "/Custom/Financials/Reports/MyDataModel.xdm"
 print(f"Exporting data model: {data_model_path}")
-data_model_data = service.downloadDataModel(dataModelAbsolutePath=data_model_path)
+data_model_data = service.downloadDataModel(
+    dataModelAbsolutePath=data_model_path,
+    userID=args.username
+)
 with open("exported_reports/MyDataModel.xdm", "wb") as f:
     f.write(data_model_data)
