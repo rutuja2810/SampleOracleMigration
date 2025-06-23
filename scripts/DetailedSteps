@@ -1,0 +1,67 @@
+Simple Step-by-Step Guide: Oracle BI Publisher Migration with GitHub Actions
+🎯 Goal:
+Move .xdm (data model) and .xdo (layout) report files between two Oracle ERP Cloud (Fusion Apps) environments — like DEV ➝ TEST — using GitHub Actions.
+
+📦 What You Need
+✅ Oracle BI Publisher:
+Source instance (e.g., https://dev.fa.oraclecloud.com)
+
+Target instance (e.g., https://test.fa.oraclecloud.com)
+
+BI Publisher user account with access to Catalog Web Services
+
+✅ GitHub Repository:
+Contains your .xdo and .xdm files or scripts to export/import them
+
+You will use GitHub Actions for automation
+
+🔐 Step 1: Store Credentials in GitHub Secrets
+Go to your repo → Settings → Secrets and variables → Actions → New repository secret and add:
+
+Secret Name	Description
+BI_USER	Your BI Publisher user (e.g. bi_user@oracle.com)
+BI_PASS	Password or App Password
+SRC_BI_URL	Source URL (e.g., https://dev.fa.oraclecloud.com)
+TGT_BI_URL	Target URL (e.g., https://test.fa.oraclecloud.com)
+
+📁 Step 2: Project Structure
+Inside your repo:
+
+perl
+Copy
+Edit
+my-repo/
+├── .github/
+│   └── workflows/
+│       └── migrate_bi_reports.yml
+├── scripts/
+│   ├── export_bi_reports.py
+│   └── import_bi_reports.py
+⚙️ Step 3: GitHub Actions Workflow (migrate_bi_reports.yml)
+Create this file
+
+
+🧾 Step 4: Sample Python Scripts
+1️⃣ scripts/export_bi_reports.py
+
+2️⃣ scripts/import_bi_reports.py
+
+✅ How to Run This
+Push to main branch
+
+Or go to GitHub → Actions → Migrate BI Publisher Reports → Run workflow (manual trigger)
+
+✅ Result
+.xdm and .xdo are exported from source ERP
+
+Files are stored as artifacts in GitHub
+
+Then imported into the target ERP
+
+✅ Optional Add-ons
+Add email or Slack notifications after migration
+
+Add manual approval before importing into production
+
+Track migrations via GitHub Action logs and artifacts
+
