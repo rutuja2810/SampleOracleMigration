@@ -1,20 +1,19 @@
-name: Migrate BI Publisher ReportsMore actions
+name: Migrate BI Publisher Reports
 
 on:
-  workflow_dispatch:  # Manual trigger from GitHub UI
+  workflow_dispatch:
   push:
-    branches: [main]  # Also trigger on push to main
+    branches: [main]
 
 jobs:
   migrate:
     runs-on: ubuntu-latest
 
     env:
-      # Source and Target BI Publisher URLs from GitHub Secrets
-      SRC_BI_URL: ${{ secrets.SRC_BI_URL }}   # Source BI Publisher environment URL
-      TGT_BI_URL: ${{ secrets.TGT_BI_URL }}   # Target BI Publisher environment URL
-      BI_USER: ${{ secrets.BI_USER }}         # BI Publisher username (shared)
-      BI_PASS: ${{ secrets.BI_PASS }}         # BI Publisher password or app password
+      SRC_BI_URL: ${{ secrets.SRC_BI_URL }}
+      TGT_BI_URL: ${{ secrets.TGT_BI_URL }}
+      BI_USER: ${{ secrets.BI_USER }}
+      BI_PASS: ${{ secrets.BI_PASS }}
 
     steps:
       - name: Checkout repository code
@@ -33,10 +32,7 @@ jobs:
       - name: Export Reports from SOURCE BI Publisher
         run: |
           mkdir -p exported_reports
-          python3 scripts/export_bi_reports.py \
-            --url "$SRC_BI_URL" \
-            --username "$BI_USER" \
-            --password "$BI_PASS" \
+          python3 scripts/export_bi_reports.py --url "$SRC_BI_URL" --username "$BI_USER" --password "$BI_PASS"
 
       - name: Upload Exported Reports as Artifact
         uses: actions/upload-artifact@v4
@@ -45,14 +41,11 @@ jobs:
           path: exported_reports/
 
       - name: Download Exported Reports Artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: bi-reports
           path: exported_reports/
 
       - name: Import Reports to TARGET BI Publisher
         run: |
-          python3 scripts/import_bi_reports.py \
-            --url "$TGT_BI_URL" \
-            --username "$BI_USER" \
-            --password "$BI_PASS" \
+          python3 scripts/import_bi_reports.py --url "$TGT_BI_URL" --username "$BI_USER" --password "$BI_PASS"
