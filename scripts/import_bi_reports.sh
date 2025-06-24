@@ -16,8 +16,8 @@ WSDL_URL="${BASE_URL}/services/PublicReportService?wsdl"
 EXPORT_FOLDER="exported_reports"
 
 # Example report details: filename and report path in BI server
-declare -a FILES=("MyReport.xdo" "MyDataModel.xdm")
-declare -a PATHS=("/Custom/Financials/Reports/MyReport.xdo" "/Custom/Financials/Reports/MyDataModel.xdm")
+declare -a FILES=("MyReport.xdo")
+declare -a PATHS=("/shared/Custom/Financials/Payments/MyReport.xdo")
 
 # Loop through each file and upload
 for i in "${!FILES[@]}"; do
