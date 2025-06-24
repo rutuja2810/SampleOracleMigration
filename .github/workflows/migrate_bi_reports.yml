@@ -31,6 +31,6 @@ jobs:
           name: bi-reports
           path: exported_reports/
 
-      - name: Import Reports to TARGET BI Publisher (Python script)
+      - name: Import Reports to TARGET BI Publisher (shell script)
         run: |
           bash scripts/import_bi_reports.sh --url "$TGT_BI_URL" --username "$BI_USER" --password "$BI_PASS"
