@@ -31,7 +31,7 @@ logging.config.dictConfig({
 
 # Parse CLI args
 parser = argparse.ArgumentParser()
-parser.add_argument('--url', required=True, help="Full WSDL URL (e.g., https://host/xmlpserver/services/PublicReportService?wsdl)")
+parser.add_argument('--url', required=True, help="Base BI URL (e.g., https://host) — WSDL path will be auto-appended")
 parser.add_argument('--username', required=True)
 parser.add_argument('--password', required=True)
 args = parser.parse_args()
