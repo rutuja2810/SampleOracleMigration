@@ -1,12 +1,12 @@
 import argparse
-import os
 import logging.config
-from zeep import Client
-from requests.auth import HTTPBasicAuth
-from zeep.transports import Transport
+import os
 import requests
+from zeep import Client
+from zeep.transports import Transport
+from requests.auth import HTTPBasicAuth
 
-# Enable Zeep debug logging to see full SOAP request/response (optional but useful)
+# Optional: Enable Zeep debug logging
 logging.config.dictConfig({
     'version': 1,
     'formatters': {
@@ -28,12 +28,37 @@ logging.config.dictConfig({
     }
 })
 
+# Parse CLI arguments
 parser = argparse.ArgumentParser()
-parser.add_argument('--url', required=True)
+parser.add_argument('--url', required=True, help="Full WSDL URL (e.g., https://host/xmlpserver/services/PublicReportService?wsdl)")
 parser.add_argument('--username', required=True)
 parser.add_argument('--password', required=True)
 args = parser.parse_args()
 
-wsdl = f"{args.url}/xmlpserver/services/PublicReportService?wsdl"
+# Set up authenticated session
 session = requests.Session()
 session.auth = HTTPBasicAuth(args.username, args.password)
+
+# Create Zeep SOAP client
+client = Client(wsdl=args.url, transport=Transport(session=session))
+
+# Export logic (simplified)
+EXPORT_FOLDER = "exported_reports"
+os.makedirs(EXPORT_FOLDER, exist_ok=True)
+
+# Example: list a report and download it (update this logic as needed)
+# Replace '/Your/Report/Path.xdo' with the actual path
+report_path = "/Your/Report/Path.xdo"
+
+try:
+    print(f"Exporting report from: {report_path}")
+    result = client.service.getDocumentData(report_path, '', False, '', '', '')
+    
+    output_path = os.path.join(EXPORT_FOLDER, os.path.basename(report_path))
+    with open(output_path, "wb") as f:
+        f.write(result)
+    
+    print(f"Exported to: {output_path}")
+
+except Exception as e:
+    print(f"Error exporting report: {e}")
