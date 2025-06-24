@@ -19,20 +19,10 @@ jobs:
       - name: Checkout repository code
         uses: actions/checkout@v3
 
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Python dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          pip install zeep requests
-
-      - name: Export Reports from SOURCE BI Publisher
+      - name: Export Reports from SOURCE BI Publisher (shell script)
         run: |
           mkdir -p exported_reports
-          python3 scripts/export_bi_reports.sh --url "$SRC_BI_URL" --username "$BI_USER" --password "$BI_PASS"
+          bash scripts/export_bi_reports.sh --url "$SRC_BI_URL" --username "$BI_USER" --password "$BI_PASS"
 
       - name: Upload Exported Reports as Artifact
         uses: actions/upload-artifact@v4
@@ -40,6 +30,6 @@ jobs:
           name: bi-reports
           path: exported_reports/
 
-      - name: Import Reports to TARGET BI Publisher
+      - name: Import Reports to TARGET BI Publisher (Python script)
         run: |
           python3 scripts/import_bi_reports.sh --url "$TGT_BI_URL" --username "$BI_USER" --password "$BI_PASS"
