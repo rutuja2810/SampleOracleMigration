@@ -32,7 +32,7 @@ jobs:
       - name: Export Reports from SOURCE BI Publisher
         run: |
           mkdir -p exported_reports
-          python3 scripts/export_bi_reports.py --url "$SRC_BI_URL" --username "$BI_USER" --password "$BI_PASS"
+          python3 scripts/export_bi_reports.sh --url "$SRC_BI_URL" --username "$BI_USER" --password "$BI_PASS"
 
       - name: Upload Exported Reports as Artifact
         uses: actions/upload-artifact@v4
@@ -42,4 +42,4 @@ jobs:
 
       - name: Import Reports to TARGET BI Publisher
         run: |
-          python3 scripts/import_bi_reports.py --url "$TGT_BI_URL" --username "$BI_USER" --password "$BI_PASS"
+          python3 scripts/import_bi_reports.sh --url "$TGT_BI_URL" --username "$BI_USER" --password "$BI_PASS"
