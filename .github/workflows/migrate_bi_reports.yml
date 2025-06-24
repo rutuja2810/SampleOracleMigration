@@ -14,6 +14,7 @@ jobs:
       TGT_BI_URL: ${{ secrets.TGT_BI_URL }}
       BI_USER: ${{ secrets.BI_USER }}
       BI_PASS: ${{ secrets.BI_PASS }}
+      REPORT_PATH: ${{secrets.REPORT_PATH}}
 
     steps:
       - name: Checkout repository code
